@@ -1,20 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Мой сайт</title>
-  <style>
-    body {
-      background-color: #f2f2f2;
-    }
-    
-    .logo {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-    }
-  </style>
+    <title>Анимация линий</title>
+    <style>
+        body {
+            background-color: #000000; /* Черный фон */
+            margin: 0;
+            overflow: hidden; /* Скрываем полосы прокрутки */
+        }
+        canvas {
+            display: block; /* Растягиваем канвас на всю ширину и высоту окна */
+        }
+    </style>
 </head>
 <body>
-  <img class="logo" src="images/131987-200.png" alt="Лого">
+    <canvas id="canvas"></canvas>
+
+    <script>
+        // Создаем канвас и устанавливаем его размеры
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Слушаем событие движения мыши
+        document.addEventListener("mousemove", drawLines);
+
+        // Массив для хранения точек
+        const points = [];
+
+        // Функция для отрисовки линий и шарика
+        function drawLines(event) {
+            // Очищаем канвас перед каждым кадром
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Добавляем текущую позицию мыши в массив точек
+            const { clientX, clientY } = event;
+            points.push({ x: clientX, y: clientY });
+
+            // Ограничиваем длину массива точек, чтобы сохранять только последние 50 точек
+            if (points.length > 50) {
+                points.shift();
+            }
+
+            // Отрисовка линий
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.strokeStyle = "#ffffff"; // Белый цвет линий
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Отрисовка шарика в текущей позиции мыши
+            ctx.beginPath();
+            ctx.arc(clientX, clientY, 10, 0, Math.PI * 2, false);
+            ctx.fillStyle = "#ffffff"; // Белый цвет шарика
+            ctx.fill();
+        }
+    </script>
 </body>
 </html>
